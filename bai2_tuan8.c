@@ -2,34 +2,33 @@
 #include <stdlib.h>
 
 typedef struct Node {
-    int coeff;       // Hệ số
-    int exp;         // Số mũ
+    int he_so;       // Hệ số
+    int so_mu;         // Số mũ
     struct Node* next; // Con trỏ tới đơn thức tiếp theo
 } Node;
 
-Node* createNode(int coeff, int exp) {
+Node* TaoDonThuc(int he_so, int so_mu) {
     Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->coeff = coeff;
-    newNode->exp = exp;
+    newNode->he_so = he_so;
+    newNode->so_mu = so_mu;
     newNode->next = NULL;
     return newNode;
 }
-
-void insertTerm(Node** head, int coeff, int exp) {
-    Node* newNode = createNode(coeff, exp);
-    if (*head == NULL || (*head)->exp < exp) {
+void ChenDonThuc(Node** head, int he_so, int so_mu) {
+    Node* newNode = TaoDonThuc(he_so, so_mu);
+    if (*head == NULL || (*head)->so_mu < so_mu) {
         newNode->next = *head;
         *head = newNode;
         return;
     }
     Node* current = *head;
-    while (current->next != NULL && current->next->exp > exp) {
+    while (current->next != NULL && current->next->so_mu > so_mu) {
         current = current->next;
     }
-    if (current->exp == exp) {
-        current->coeff += coeff;
+    if (current->so_mu == so_mu) {
+        current->he_so += he_so;
         free(newNode);
-        if (current->coeff == 0) { // Xóa nếu hệ số trở về 0
+        if (current->he_so == 0) { // Xóa nếu hệ số trở về 0
             Node* temp = *head;
             if (temp == current) {
                 *head = current->next;
@@ -48,17 +47,17 @@ void insertTerm(Node** head, int coeff, int exp) {
     }
 }
 
-void printPolynomial(Node* head) {
+void InDaThuc(Node* head) {
     if (!head) {
         printf("0\n");
         return;
     }
     while (head != NULL) {
-        printf("%d", head->coeff);
-        if (head->exp != 0) {
-            printf(".x^%d", head->exp);
+        printf("%d", head->he_so);
+        if (head->so_mu != 0) {
+            printf(".x^%d", head->so_mu);
         }
-        if (head->next != NULL && head->next->coeff > 0) {
+        if (head->next != NULL && head->next->he_so > 0) {
             printf(" + ");
         } else if (head->next != NULL) {
             printf(" ");
@@ -68,27 +67,27 @@ void printPolynomial(Node* head) {
     printf("\n");
 }
 
-Node* addPolynomials(Node* f, Node* g) {
+Node* CongDaThuc(Node* f, Node* g) {
     Node* result = NULL;
     while (f != NULL) {
-        insertTerm(&result, f->coeff, f->exp);
+        ChenDonThuc(&result, f->he_so, f->so_mu);
         f = f->next;
     }
     while (g != NULL) {
-        insertTerm(&result, g->coeff, g->exp);
+        ChenDonThuc(&result, g->he_so, g->so_mu);
         g = g->next;
     }
     return result;
 }
 
-void inputPolynomial(Node** head) {
-    int n, coeff, exp;
+void NhapDaThuc(Node** head) {
+    int n, he_so, so_mu;
     printf("Nhap so luong don thuc: ");
     scanf("%d", &n);
     for (int i = 0; i < n; i++) {
-        printf("Nhap he so va so mu (coeff exp): ");
-        scanf("%d %d", &coeff, &exp);
-        insertTerm(head, coeff, exp);
+        printf("Nhap he so va so mu (he_so so_mu): ");
+        scanf("%d %d", &he_so, &so_mu);
+        ChenDonThuc(head, he_so, so_mu);
     }
 }
 
@@ -96,15 +95,15 @@ int main() {
     Node* f = NULL;
     Node* g = NULL;
     printf("Nhap da thuc f(x):\n");
-    inputPolynomial(&f);
+    NhapDaThuc(&f);
     printf("Da thuc f(x) = ");
-    printPolynomial(f);
+    InDaThuc(f);
     printf("Nhap da thuc g(x):\n");
-    inputPolynomial(&g);
+    NhapDaThuc(&g);
     printf("Da thuc g(x) = ");
-    printPolynomial(g);
-    Node* h = addPolynomials(f, g);
+    InDaThuc(g);
+    Node* h = CongDaThuc(f, g);
     printf("Tong h(x) = f(x) + g(x) = ");
-    printPolynomial(h);
+    InDaThuc(h);
     return 0;
 }
