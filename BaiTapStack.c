@@ -69,6 +69,10 @@ void displayStack(Node* top) {
     }
 }
 
+//kiểm tra rỗng 
+
+
+
 int main() {
     Node* woodStack = NULL;  // Stack quản lý kho gỗ
 
